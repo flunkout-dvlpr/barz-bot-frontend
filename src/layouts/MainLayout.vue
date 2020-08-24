@@ -4,10 +4,10 @@
       <q-toolbar>
 
         <q-toolbar-title>
-          Barz Bot
+          Barz Bot 🤖
         </q-toolbar-title>
 
-        <div>V 1.0.0</div>
+        <div> {{ welcomeMessage }}</div>
       </q-toolbar>
     </q-header>
 
@@ -18,8 +18,18 @@
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex'
 export default {
-  name: 'MainLayout'
+  name: 'MainLayout',
+  computed: {
+    ...mapGetters('spotify', ['user']),
+    welcomeMessage () {
+      if (this.user) {
+        console.log(this.user)
+        return `Wuz Up,  ${this.user.display_name}!`
+      }
+      return 'Wuz Up!'
+    }
+  }
 }
 </script>
