@@ -1,3 +1,4 @@
+import { getLyrics } from 'genius-lyrics-api'
 
 export function loadAuthorizationCode ({ commit, state }) {
   var urlParameters = new URLSearchParams(window.location.search)
@@ -122,4 +123,18 @@ export function playback ({ commit }) {
         return playbackStatus
       }
     })
+}
+
+export function loadLyrics ({ state }) {
+  var trackName = state.currentTrack.item.name
+  var trackArtist = state.currentTrack.item.artists.map(artist => artist.name)[0]
+  const options = {
+    apiKey: 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU',
+    title: trackName,
+    artist: trackArtist,
+    optimizeQuery: true
+  }
+  return getLyrics(options).then((lyrics) => {
+    return lyrics
+  })
 }
