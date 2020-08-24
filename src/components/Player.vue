@@ -83,7 +83,7 @@
             :max="songDuration"
             dark
             color="secondary"
-            label
+            @change="updateProgress()"
           />
         </q-item-section>
         <q-item-section side>
@@ -130,7 +130,7 @@ export default {
     ...mapGetters('spotify', ['currentTrack'])
   },
   methods: {
-    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume', 'loadLyrics']),
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume', 'loadLyrics', 'setPlayback']),
     getLyrics () {
       this.lyricsText = ''
       this.lyrics = !this.lyrics
@@ -144,6 +144,11 @@ export default {
           })
         })
       }
+    },
+    updateProgress () {
+      this.setPlayback(this.progress).then(() => {
+        this.playbackProgress()
+      })
     },
     updateVolume () {
       this.setVolume(this.volume)
