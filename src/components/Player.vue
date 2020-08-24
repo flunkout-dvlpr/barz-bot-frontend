@@ -1,0 +1,133 @@
+<template>
+  <q-card-section>
+    <div class="row justify-center">
+      <div>
+        <q-btn
+          round
+          size="md"
+          class="col-4 bg-secondary text-primary q-mx-md"
+          icon="skip_previous"
+          @click="previous()"
+        />
+      </div>
+      <div>
+        <q-btn
+          round
+          size="md"
+          class="col-4 bg-secondary text-primary q-mx-md"
+          icon="play_arrow"
+          @click="playbackControl()"
+        />
+      </div>
+      <div>
+        <q-btn
+          round
+          size="md"
+          class="col-4 bg-secondary text-primary q-mx-md"
+          icon="skip_next"
+          @click="nextControl()"
+        />
+      </div>
+    </div>
+    <q-item class="row justify-center">
+      <q-item-section side>
+        <q-icon color="secondary" name="volume_down" />
+      </q-item-section>
+      <q-item-section>
+        <q-slider
+          v-model="volume"
+          :min="0"
+          :max="10"
+          dark
+          color="secondary"
+        />
+      </q-item-section>
+      <q-item-section side>
+        <q-icon color="secondary" name="volume_up" />
+      </q-item-section>
+    </q-item>
+    <q-item class="row justify-center">
+      <q-item-section side>
+        <q-item-label caption class="text-white">{{ progress | msToMin }}</q-item-label>
+      </q-item-section>
+      <q-item-section>
+        <q-slider
+          v-model="progress"
+          :min="0"
+          :max="songDuration"
+          dark
+          color="secondary"
+        />
+      </q-item-section>
+      <q-item-section side>
+        <q-item-label caption class="text-white">{{ songDuration | msToMin }}</q-item-label>
+      </q-item-section>
+    </q-item>
+  </q-card-section>
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+export default {
+  name: 'Player',
+  data () {
+    return {
+      volume: 5,
+      progress: 0,
+      songDuration: 0
+    }
+  },
+  filters: {
+    msToMin: function (milliseconds) {
+      const minutes = Math.floor(milliseconds / 60000)
+      const seconds = ((milliseconds % 60000) / 1000).toFixed(0)
+      return minutes + ':' + (seconds < 10 ? '0' : '') + seconds
+    }
+  },
+  computed: {
+    ...mapGetters('spotify', ['currentTrack'])
+  },
+  methods: {
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause']),
+    songCountdown () {
+      var secondInterval = setInterval(() => {
+        this.progress += 1000
+        console.log(this.progress)
+        if (this.progress >= this.songDuration) {
+          clearInterval(secondInterval)
+          console.log('Song is done', this.progress, this.songDuration)
+          this.loadCurrentTrack()
+          this.playbackProgress()
+        }
+      }, 1000)
+    },
+    playbackProgress () {
+      setTimeout(() => {
+        this.progress = this.currentTrack.progress_ms
+        this.songDuration = this.currentTrack.item.duration_ms
+        this.songCountdown()
+        console.log('Progress', this.progress)
+        console.log('Duration', this.songDuration)
+      }, 1000)
+    },
+    nextControl () {
+      this.next().then(() => {
+        this.playbackProgress()
+      })
+    },
+    playbackControl () {
+      this.playback().then((playbackStatus) => {
+        if (playbackStatus.is_playing) {
+          this.pause()
+        } else {
+          this.play()
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
