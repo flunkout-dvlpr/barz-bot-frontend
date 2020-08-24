@@ -93,15 +93,13 @@
     </div>
     <div v-show="lyrics">
       <q-scroll-area style="height: 100px;">
-        <ol>
-          <li
+          <div
             class="text-white"
             v-for="line in lyricsText"
             :key="line.id"
           >
           {{ line }}
-          </li>
-      </ol>
+          </div>
       </q-scroll-area>
     </div>
   </q-card-section>
