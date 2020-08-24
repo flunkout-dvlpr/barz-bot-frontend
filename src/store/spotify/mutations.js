@@ -12,5 +12,5 @@ export function setCurrentTrack (state, payload) {
 }
 
 export function setPlaybackStatus (state, payload) {
-  state.setPlaybackStatus = payload
+  state.playbackStatus = payload
 }
