@@ -104,12 +104,23 @@ export function pause ({ dispatch }) {
     })
 }
 
-export function setVolume (state, payload) {
+export function setVolume ({ state }, payload) {
   return this._vm.$axios.put('https://api.spotify.com/v1/me/player/volume?volume_percent=' + payload)
     .then((response) => {
+      console.log(response)
       if (response.status === 204) {
-        console.log('Volume set to', payload)
+        return response.status
       }
+    })
+    .catch((error) => {
+      var device = state.playbackStatus.device.name
+      this._vm.$q.notify({
+        color: 'negative',
+        position: 'top',
+        message: `Can't control ${device}, Sorry :(`,
+        icon: 'report_problem'
+      })
+      return error
     })
 }
 
