@@ -103,6 +103,15 @@ export function pause ({ dispatch }) {
     })
 }
 
+export function setVolume (state, payload) {
+  return this._vm.$axios.put('https://api.spotify.com/v1/me/player/volume?volume_percent=' + payload)
+    .then((response) => {
+      if (response.status === 204) {
+        console.log('Volume set to', payload)
+      }
+    })
+}
+
 export function playback ({ commit }) {
   return this._vm.$axios.get('https://api.spotify.com/v1/me/player')
     .then((response) => {
