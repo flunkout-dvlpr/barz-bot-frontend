@@ -7,7 +7,7 @@
           size="md"
           class="col-4 bg-secondary text-primary q-mx-md"
           icon="skip_previous"
-          @click="previous()"
+          @click="previousControl()"
         />
       </div>
       <div>
@@ -90,24 +90,26 @@ export default {
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause']),
     songCountdown () {
-      var secondInterval = setInterval(() => {
+      this.secondInterval = setInterval(() => {
         this.progress += 1000
-        console.log(this.progress)
+        // console.log(this.progress)
         if (this.progress >= this.songDuration) {
-          clearInterval(secondInterval)
+          clearInterval(this.secondInterval)
           console.log('Song is done', this.progress, this.songDuration)
-          this.loadCurrentTrack()
           this.playbackProgress()
         }
       }, 1000)
     },
     playbackProgress () {
       setTimeout(() => {
-        this.progress = this.currentTrack.progress_ms
-        this.songDuration = this.currentTrack.item.duration_ms
-        this.songCountdown()
-        console.log('Progress', this.progress)
-        console.log('Duration', this.songDuration)
+        this.loadCurrentTrack().then(() => {
+          clearInterval(this.secondInterval)
+          this.progress = this.currentTrack.progress_ms
+          this.songDuration = this.currentTrack.item.duration_ms
+          this.songCountdown()
+          console.log('Progress', this.progress)
+          console.log('Duration', this.songDuration)
+        })
       }, 1000)
     },
     nextControl () {
@@ -115,15 +117,29 @@ export default {
         this.playbackProgress()
       })
     },
+    previousControl () {
+      this.previous().then(() => {
+        this.playbackProgress()
+      })
+    },
     playbackControl () {
       this.playback().then((playbackStatus) => {
         if (playbackStatus.is_playing) {
+          clearInterval(this.secondInterval)
           this.pause()
         } else {
           this.play()
+          this.playbackProgress()
         }
       })
     }
+  },
+  created () {
+    this.playback().then((playbackStatus) => {
+      if (playbackStatus.is_playing) {
+        this.playbackProgress()
+      }
+    })
   }
 }
 </script>
