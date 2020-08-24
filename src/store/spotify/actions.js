@@ -113,6 +113,15 @@ export function setVolume (state, payload) {
     })
 }
 
+export function setPlayback (state, payload) {
+  return this._vm.$axios.put('https://api.spotify.com/v1/me/player/seek?position_ms=' + payload)
+    .then((response) => {
+      if (response.status === 204) {
+        console.log('Playback set to', payload)
+      }
+    })
+}
+
 export function playback ({ commit }) {
   return this._vm.$axios.get('https://api.spotify.com/v1/me/player')
     .then((response) => {
