@@ -29,7 +29,16 @@
         />
       </div>
     </div>
-    <q-item class="row justify-center">
+    <div align="right">
+      <q-btn
+        color="grey"
+        flat
+        dense
+        :icon="expanded ? 'videogame_asset' : 'videogame_asset'"
+        @click="expanded = !expanded"
+      />
+    </div>
+    <q-item class="row justify-center" v-show="expanded">
       <q-item-section side>
         <q-icon color="secondary" name="volume_down" />
       </q-item-section>
@@ -47,7 +56,7 @@
         <q-icon color="secondary" name="volume_up" />
       </q-item-section>
     </q-item>
-    <q-item class="row justify-center">
+    <q-item class="row justify-center" v-show="expanded">
       <q-item-section side>
         <q-item-label caption class="text-white">{{ progress | msToMin }}</q-item-label>
       </q-item-section>
@@ -58,6 +67,7 @@
           :max="songDuration"
           dark
           color="secondary"
+          label
         />
       </q-item-section>
       <q-item-section side>
@@ -75,7 +85,8 @@ export default {
     return {
       volume: 0,
       progress: 0,
-      songDuration: 0
+      songDuration: 0,
+      expanded: false
     }
   },
   filters: {
@@ -89,14 +100,13 @@ export default {
     ...mapGetters('spotify', ['currentTrack'])
   },
   methods: {
-    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause']),
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume']),
     updateVolume () {
-      console.log('Set volume', this.volume)
+      this.setVolume(this.volume)
     },
     songCountdown () {
       this.secondInterval = setInterval(() => {
         this.progress += 1000
-        // console.log(this.progress)
         if (this.progress >= this.songDuration) {
           clearInterval(this.secondInterval)
           console.log('Song is done', this.progress, this.songDuration)
@@ -106,10 +116,11 @@ export default {
     },
     playbackProgress () {
       setTimeout(() => {
-        this.loadCurrentTrack().then(() => {
+        this.playback().then((playbackStatus) => {
+          this.volume = playbackStatus.device.volume_percent
           clearInterval(this.secondInterval)
-          this.progress = this.currentTrack.progress_ms
-          this.songDuration = this.currentTrack.item.duration_ms
+          this.progress = playbackStatus.progress_ms
+          this.songDuration = playbackStatus.item.duration_ms
           this.songCountdown()
           console.log('Progress', this.progress)
           console.log('Duration', this.songDuration)
