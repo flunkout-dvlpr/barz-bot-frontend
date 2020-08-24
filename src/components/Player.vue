@@ -38,7 +38,7 @@
           dense
           icon="notes"
           label="Lyrics"
-          @click="lyrics = !lyrics"
+          @click="getLyrics()"
         />
       </div>
       <div class="col-6" align="right">
@@ -49,7 +49,7 @@
           dense
           icon-right="videogame_asset"
           label="Controls"
-          @click="controls = !controls"
+          @click="controls = !controls; lyrics = false"
         />
       </div>
     </div>
@@ -92,7 +92,17 @@
       </q-item>
     </div>
     <div v-show="lyrics">
-      Lyrics
+      <q-scroll-area style="height: 100px;">
+        <ol>
+          <li
+            class="text-white"
+            v-for="line in lyricsText"
+            :key="line.id"
+          >
+          {{ line }}
+          </li>
+      </ol>
+      </q-scroll-area>
     </div>
   </q-card-section>
 </template>
@@ -107,7 +117,8 @@ export default {
       progress: 0,
       songDuration: 0,
       controls: false,
-      lyrics: false
+      lyrics: false,
+      lyricsText: ''
     }
   },
   filters: {
@@ -121,7 +132,21 @@ export default {
     ...mapGetters('spotify', ['currentTrack'])
   },
   methods: {
-    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume']),
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume', 'loadLyrics']),
+    getLyrics () {
+      this.lyricsText = ''
+      this.lyrics = !this.lyrics
+      this.controls = false
+      if (this.lyrics) {
+        this.loadLyrics().then((lyrics) => {
+          this.lyricsText = lyrics.split(/\r\n|\r|\n/).filter(line => {
+            if (line && !(line.includes('['))) {
+              return line
+            }
+          })
+        })
+      }
+    },
     updateVolume () {
       this.setVolume(this.volume)
     },
@@ -130,6 +155,7 @@ export default {
         this.progress += 1000
         if (this.progress >= this.songDuration) {
           clearInterval(this.secondInterval)
+          this.lyrics = false
           console.log('Song is done', this.progress, this.songDuration)
           this.playbackProgress()
         }
@@ -151,11 +177,13 @@ export default {
     },
     nextControl () {
       this.next().then(() => {
+        this.lyrics = false
         this.playbackProgress()
       })
     },
     previousControl () {
       this.previous().then(() => {
+        this.lyrics = false
         this.playbackProgress()
       })
     },
