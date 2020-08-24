@@ -151,7 +151,11 @@ export default {
       })
     },
     updateVolume () {
-      this.setVolume(this.volume)
+      this.setVolume(this.volume).then((response) => {
+        if (response !== 204) {
+          this.volume = 100
+        }
+      })
     },
     songCountdown () {
       this.secondInterval = setInterval(() => {
@@ -168,6 +172,7 @@ export default {
       setTimeout(() => {
         this.playback().then((playbackStatus) => {
           this.loadCurrentTrack()
+          console.log(playbackStatus.device)
           this.volume = playbackStatus.device.volume_percent
           clearInterval(this.secondInterval)
           this.progress = playbackStatus.progress_ms
