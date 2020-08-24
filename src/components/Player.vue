@@ -37,9 +37,10 @@
         <q-slider
           v-model="volume"
           :min="0"
-          :max="10"
+          :max="100"
           dark
           color="secondary"
+          @change="updateVolume()"
         />
       </q-item-section>
       <q-item-section side>
@@ -72,7 +73,7 @@ export default {
   name: 'Player',
   data () {
     return {
-      volume: 5,
+      volume: 0,
       progress: 0,
       songDuration: 0
     }
@@ -89,6 +90,9 @@ export default {
   },
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause']),
+    updateVolume () {
+      console.log('Set volume', this.volume)
+    },
     songCountdown () {
       this.secondInterval = setInterval(() => {
         this.progress += 1000
@@ -125,9 +129,11 @@ export default {
     playbackControl () {
       this.playback().then((playbackStatus) => {
         if (playbackStatus.is_playing) {
+          this.volume = playbackStatus.device.volume_percent
           clearInterval(this.secondInterval)
           this.pause()
         } else {
+          this.volume = playbackStatus.device.volume_percent
           this.play()
           this.playbackProgress()
         }
@@ -137,6 +143,7 @@ export default {
   created () {
     this.playback().then((playbackStatus) => {
       if (playbackStatus.is_playing) {
+        this.volume = playbackStatus.device.volume_percent
         this.playbackProgress()
       }
     })
