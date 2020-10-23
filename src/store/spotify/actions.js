@@ -152,7 +152,11 @@ export async function loadLyrics ({ state }) {
   const song = `${trackName} ${trackArtist}`
   const reqUrl = `${searchUrl}${encodeURI(song)}`
   const headers = {
-    Authorization: 'Bearer ' + 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU'
+    Authorization: 'Bearer ' + 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU',
+    Headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    }
   }
   return this._vm.$axios.get(reqUrl, { headers }).then((response) => {
     console.log(response)
