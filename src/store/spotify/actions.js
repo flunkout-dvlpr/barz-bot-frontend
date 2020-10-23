@@ -149,10 +149,21 @@ export async function loadLyrics ({ state }) {
   var trackName = state.currentTrack.item.name
   var trackArtist = state.currentTrack.item.artists.map(artist => artist.name)[0]
   const searchUrl = 'https://api.genius.com/search?q='
-  const token = '&access_token=eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU'
+  // const token = '&access_token=eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU'
   const song = `${trackName} ${trackArtist}`
-  const reqUrl = `${searchUrl}${encodeURI(song)}${token}`
-  return fetch(reqUrl).then((response) => {
-    console.log(response)
+  const reqUrl = `${searchUrl}${encodeURI(song)}` // ${token}`
+  var options = {
+    headers: {
+      Authorization: 'Bearer eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU',
+      Accept: '*/*'
+    }
+  }
+  // Create new axios instance without default headers (Authorization token)
+  var instance = this._vm.$axios.create()
+  delete instance.defaults.headers.common.Authorization
+  return instance.get(reqUrl, options).then((data) => {
+    // var response = data.json()
+    console.log(data)
+    return data
   })
 }
