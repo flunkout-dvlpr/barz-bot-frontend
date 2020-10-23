@@ -152,15 +152,7 @@ export async function loadLyrics ({ state }) {
   const token = '&access_token=eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU'
   const song = `${trackName} ${trackArtist}`
   const reqUrl = `${searchUrl}${encodeURI(song)}${token}`
-  console.log(reqUrl)
-  // const headers = {
-  //   Authorization: 'Bearer ' + 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU',
-  //   Headers: {
-  //     'Content-Type': 'application/json',
-  //     'Access-Control-Allow-Origin': '*'
-  //   }
-  // }
-  return this._vm.$axios.get(reqUrl).then((response) => {
+  return fetch(reqUrl).then((response) => {
     console.log(response)
   })
 }
