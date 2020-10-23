@@ -1,4 +1,4 @@
-import { getLyrics } from 'genius-lyrics-api'
+// import { getLyrics } from 'genius-lyrics-api'
 
 export function loadAuthorizationCode ({ commit, state }) {
   var urlParameters = new URLSearchParams(window.location.search)
@@ -145,16 +145,16 @@ export function playback ({ commit }) {
     })
 }
 
-export function loadLyrics ({ state }) {
+export async function loadLyrics ({ state }) {
   var trackName = state.currentTrack.item.name
   var trackArtist = state.currentTrack.item.artists.map(artist => artist.name)[0]
-  const options = {
-    apiKey: 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU',
-    title: trackName,
-    artist: trackArtist,
-    optimizeQuery: true
+  const searchUrl = 'https://api.genius.com/search?q='
+  const song = `${trackName} ${trackArtist}`
+  const reqUrl = `${searchUrl}${encodeURI(song)}`
+  const headers = {
+    Authorization: 'Bearer ' + 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU'
   }
-  return getLyrics(options).then((lyrics) => {
-    return lyrics
+  return this._vm.$axios.get(reqUrl, { headers }).then((response) => {
+    console.log(response)
   })
 }
