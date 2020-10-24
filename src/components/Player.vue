@@ -92,7 +92,7 @@
       </q-item>
     </div>
     <div v-show="lyrics">
-      <q-scroll-area style="height: 100px;">
+      <q-scroll-area style="height: 350px;">
           <div
             class="text-white"
             v-for="line in lyricsText"
@@ -132,6 +132,7 @@ export default {
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume', 'loadLyrics', 'setPlayback']),
     getLyrics () {
+      this.$emit('hideCover')
       this.lyricsText = ''
       this.lyrics = !this.lyrics
       this.controls = false
