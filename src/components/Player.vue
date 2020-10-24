@@ -132,7 +132,9 @@ export default {
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume', 'loadLyrics', 'setPlayback']),
     getLyrics () {
-      this.loadLyrics()
+      this.loadLyrics().then((response) => {
+        console.log(response)
+      })
       // this.lyricsText = ''
       // this.lyrics = !this.lyrics
       // this.controls = false
