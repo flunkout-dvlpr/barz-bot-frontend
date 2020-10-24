@@ -14,7 +14,7 @@
           :user="user"
         />
         <Track
-          v-if="currentTrack"
+          v-if="currentTrack && !displayingLyrics"
           class="col q-pa-none q-mx-sm"
           :track="currentTrack"
         />
@@ -22,6 +22,7 @@
           v-if="token"
           class="col q-ma-sm bg-primary"
           style="border-radius: 10px;"
+          @hideCover="hideCover"
         />
     </q-card>
   </q-page>
@@ -34,6 +35,11 @@ import Track from 'components/Track'
 import Player from 'components/Player'
 export default {
   name: 'PageIndex',
+  data () {
+    return {
+      displayingLyrics: false
+    }
+  },
   components: {
     User,
     Track,
@@ -43,7 +49,11 @@ export default {
     ...mapGetters('spotify', ['authorizationURL', 'token', 'user', 'currentTrack'])
   },
   methods: {
-    ...mapActions('spotify', ['loadAuthorizationCode', 'loadAccessCode', 'loadCurrentTrack'])
+    ...mapActions('spotify', ['loadAuthorizationCode', 'loadAccessCode', 'loadCurrentTrack']),
+    hideCover () {
+      console.log('Hide cover!')
+      this.displayingLyrics = !this.displayingLyrics
+    }
   },
   mounted () {
     this.loadAuthorizationCode().then((authorizationCode) => {
