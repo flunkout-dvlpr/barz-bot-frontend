@@ -1,3 +1,4 @@
+import cheerio from 'cheerio'
 
 export function loadAuthorizationCode ({ commit, state }) {
   var urlParameters = new URLSearchParams(window.location.search)
@@ -157,15 +158,11 @@ export async function loadLyrics ({ state }) {
   return instance.get(requestURL).then((request) => {
     if (request.data.response.hits.length === 0) return null
     var songURL = request.data.response.hits[0].result.url
-    // var instance2 = this._vm.$axios.create()
-    // delete instance2.defaults.headers.common.Authorization
-    // // var options = {
-    //   headers: {
-    //   }
-    // }
-    console.log(songURL)
-    return fetch('https://genius.com/Ryan-trey-mutual-butterflies-lyrics').then((response) => {
-      console.log(response)
+    var proxy = 'https://cors-anywhere.herokuapp.com/'
+    return instance.get(proxy + songURL).then((response) => {
+      const $ = cheerio.load(response.data)
+      var lyrics = $('div[class="lyrics"]').text().trim()
+      return lyrics
     })
   })
 }
