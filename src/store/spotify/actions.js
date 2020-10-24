@@ -159,12 +159,12 @@ export async function loadLyrics ({ state }) {
     var songURL = request.data.response.hits[0].result.url
     var instance2 = this._vm.$axios.create()
     delete instance2.defaults.headers.common.Authorization
-    var options = {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      }
-    }
-    return instance2.get(songURL, options).then((response) => {
+    // var options = {
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*'
+    //   }
+    // }
+    return instance2.get(songURL).then((response) => {
       console.log(response)
     })
   })
