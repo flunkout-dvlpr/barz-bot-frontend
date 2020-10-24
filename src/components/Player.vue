@@ -132,21 +132,18 @@ export default {
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'previous', 'next', 'play', 'pause', 'setVolume', 'loadLyrics', 'setPlayback']),
     getLyrics () {
-      this.loadLyrics().then((response) => {
-        console.log(response)
-      })
-      // this.lyricsText = ''
-      // this.lyrics = !this.lyrics
-      // this.controls = false
-      // if (this.lyrics) {
-      //   this.loadLyrics().then((lyrics) => {
-      //     this.lyricsText = lyrics.split(/\r\n|\r|\n/).filter(line => {
-      //       if (line && !(line.includes('['))) {
-      //         return line
-      //       }
-      //     })
-      //   })
-      // }
+      this.lyricsText = ''
+      this.lyrics = !this.lyrics
+      this.controls = false
+      if (this.lyrics) {
+        this.loadLyrics().then((lyrics) => {
+          this.lyricsText = lyrics.split(/\r\n|\r|\n/).filter(line => {
+            if (line && !(line.includes('['))) {
+              return line
+            }
+          })
+        })
+      }
     },
     updateProgress () {
       this.setPlayback(this.progress).then(() => {
