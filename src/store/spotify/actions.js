@@ -157,14 +157,14 @@ export async function loadLyrics ({ state }) {
   return instance.get(requestURL).then((request) => {
     if (request.data.response.hits.length === 0) return null
     var songURL = request.data.response.hits[0].result.url
-    var instance2 = this._vm.$axios.create()
-    delete instance2.defaults.headers.common.Authorization
-    // var options = {
+    // var instance2 = this._vm.$axios.create()
+    // delete instance2.defaults.headers.common.Authorization
+    // // var options = {
     //   headers: {
-    //     'Access-Control-Allow-Origin': '*'
     //   }
     // }
-    return instance2.get(songURL).then((response) => {
+    console.log(songURL)
+    return fetch('https://genius.com/Ryan-trey-mutual-butterflies-lyrics').then((response) => {
       console.log(response)
     })
   })
