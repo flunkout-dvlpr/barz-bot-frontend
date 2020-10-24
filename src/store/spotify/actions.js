@@ -162,6 +162,7 @@ export async function loadLyrics ({ state }) {
     return instance.get(proxy + songURL).then((response) => {
       const $ = cheerio.load(response.data)
       var lyrics = $('div[class="lyrics"]').text().trim()
+      this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
       return lyrics
     })
   })
