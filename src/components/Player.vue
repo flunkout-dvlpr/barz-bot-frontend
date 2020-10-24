@@ -98,7 +98,7 @@
             v-for="line in lyricsText"
             :key="line.id"
           >
-          {{ line }}
+            {{ line }}
           </div>
       </q-scroll-area>
     </div>
@@ -136,7 +136,9 @@ export default {
       this.lyrics = !this.lyrics
       this.controls = false
       if (this.lyrics) {
+        this.$q.loading.show()
         this.loadLyrics().then((lyrics) => {
+          this.$q.loading.hide()
           this.lyricsText = lyrics.split(/\r\n|\r|\n/).filter(line => {
             if (line && !(line.includes('['))) {
               return line
