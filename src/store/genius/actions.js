@@ -22,7 +22,8 @@ export function loadLyrics ({ state, dispatch, commit }) {
   var instance = this._vm.$axios.create()
   delete instance.defaults.headers.common.Authorization
 
-  return instance.post('https://zwsuf4ozgj.execute-api.us-east-2.amazonaws.com/Prod/genius/get-lyrics-by-url', state.songURL).then((response) => {
+  var apiBaseURL = process.env.PROD ? 'https://zwsuf4ozgj.execute-api.us-east-2.amazonaws.com/Prod' : 'http://127.0.0.1:3000'
+  return instance.post(`${apiBaseURL}/genius/get-lyrics-by-url`, state.songURL).then((response) => {
     var lyrics = response.data.payload
     dispatch('spotify/loadSpotifyToken', null, { root: true })
     commit('setLyrics', lyrics)
