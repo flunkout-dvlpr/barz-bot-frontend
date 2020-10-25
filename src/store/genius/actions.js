@@ -2,7 +2,6 @@
 const token = 'UnTG00FLsgcgz_sM5hcxRrk5Wk0207GTXpo3M9f8RCY4G1QWYAT57C0vFbo_XLJ_'
 
 export function searchSong ({ rootState, dispatch, commit }) {
-  console.log('--------- LOADING SONG URL ---------')
   if (!rootState.spotify.currentTrack) return false
   var name = rootState.spotify.currentTrack.item.name
   var artist = rootState.spotify.currentTrack.item.artists.map(artist => artist.name)[0]
@@ -16,12 +15,10 @@ export function searchSong ({ rootState, dispatch, commit }) {
     dispatch('spotify/loadSpotifyToken', null, { root: true })
     commit('setSongURL', songURL)
     dispatch('genius/loadLyrics', null, { root: true })
-    console.log(`--------- SONG URL ${songURL} ---------`)
   })
 }
 
 export function loadLyrics ({ state, dispatch, commit }) {
-  console.log('--------- SCRAPING SONG LYRICS ---------')
   var instance = this._vm.$axios.create()
   delete instance.defaults.headers.common.Authorization
 
