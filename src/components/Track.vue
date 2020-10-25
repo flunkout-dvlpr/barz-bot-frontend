@@ -1,7 +1,7 @@
 <template>
-  <q-card-section>
+  <q-card-section @click="showImage = !showImage">
     <q-img
-      v-if="trackImage"
+      v-if="trackImage && showImage"
       :src="trackImage"
     />
     <div class="bg-primary" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
@@ -14,6 +14,11 @@
 <script>
 export default {
   name: 'Track',
+  data () {
+    return {
+      showImage: true
+    }
+  },
   props: {
     track: Object
   },
