@@ -62,7 +62,7 @@
         </q-item-section>
       </q-item>
     </div>
-    <div v-show="controls = !controls; showLyrics = false">
+    <div v-show="displayLyrics && lyrics">
       <q-scroll-area style="height: 350px;">
         <div
           class="text-white"
@@ -86,7 +86,7 @@ export default {
       progress: 0,
       songDuration: 0,
       controls: false,
-      showLyrics: false
+      displayLyrics: false
     }
   },
   filters: {
@@ -101,14 +101,10 @@ export default {
   },
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback']),
-    // showLyrics () {
-    //   this.lyricsText = ''
-    //   if (this.lyrics) {
-    //     this.lyricsText = this.lyrics
-    //   }
-    //   this.lyricsDisplay = !this.lyricsDisplay
-    //   this.controls = false
-    // },
+    showLyrics () {
+      this.displayLyrics = !this.displayLyrics
+      this.controls = false
+    },
     updateProgress () {
       this.setPlayback(this.progress).then(() => {
         this.getCurrentState()
@@ -135,7 +131,7 @@ export default {
     },
     loadControls () {
       this.controls = !this.controls
-      this.showLyrics = false
+      this.displayLyrics = false
       this.getCurrentState()
     },
     songCountdown () {
@@ -143,7 +139,7 @@ export default {
         this.progress += 1000
         if (this.progress >= this.songDuration) {
           clearInterval(this.secondInterval)
-          this.showLyrics = false
+          this.displayLyrics = false
           console.log('Song is done', this.progress, this.songDuration)
           this.loadCurrentTrack().then(() => {
             this.getCurrentState()
