@@ -9,7 +9,7 @@
           dense
           icon="notes"
           label="Lyrics"
-          @click="getLyrics()"
+          @click="showLyrics()"
         />
       </div>
       <div class="col-6" align="right">
@@ -62,11 +62,11 @@
         </q-item-section>
       </q-item>
     </div>
-    <div v-show="lyrics">
+    <div v-show="controls = !controls; showLyrics = false">
       <q-scroll-area style="height: 350px;">
         <div
           class="text-white"
-          v-for="line in lyricsText"
+          v-for="line in lyrics"
           :key="line.id"
         >
           {{ line }}
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Controls',
   data () {
@@ -86,8 +86,7 @@ export default {
       progress: 0,
       songDuration: 0,
       controls: false,
-      lyrics: false,
-      lyricsText: null
+      showLyrics: false
     }
   },
   filters: {
@@ -97,29 +96,19 @@ export default {
       return minutes + ':' + (seconds < 10 ? '0' : '') + seconds
     }
   },
+  computed: {
+    ...mapGetters('genius', ['lyrics'])
+  },
   methods: {
-    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'loadLyrics', 'setPlayback']),
-    getLyrics () {
-      this.$emit('hideCover')
-      this.lyricsText = ''
-      this.lyrics = !this.lyrics
-      this.controls = false
-      if (this.lyrics) {
-        this.$q.loading.show()
-        this.loadLyrics().then((lyrics) => {
-          this.$q.loading.hide()
-          if (lyrics) {
-            this.lyricsText = lyrics.split(/\r\n|\r|\n/).filter(line => {
-              if (line && !(line.includes('['))) {
-                return line
-              }
-            })
-          } else {
-            this.lyrics = false
-          }
-        })
-      }
-    },
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback']),
+    // showLyrics () {
+    //   this.lyricsText = ''
+    //   if (this.lyrics) {
+    //     this.lyricsText = this.lyrics
+    //   }
+    //   this.lyricsDisplay = !this.lyricsDisplay
+    //   this.controls = false
+    // },
     updateProgress () {
       this.setPlayback(this.progress).then(() => {
         this.getCurrentState()
@@ -146,7 +135,7 @@ export default {
     },
     loadControls () {
       this.controls = !this.controls
-      this.lyrics = false
+      this.showLyrics = false
       this.getCurrentState()
     },
     songCountdown () {
@@ -154,7 +143,7 @@ export default {
         this.progress += 1000
         if (this.progress >= this.songDuration) {
           clearInterval(this.secondInterval)
-          this.lyrics = false
+          this.showLyrics = false
           console.log('Song is done', this.progress, this.songDuration)
           this.loadCurrentTrack().then(() => {
             this.getCurrentState()
@@ -162,23 +151,6 @@ export default {
         }
       }, 1000)
     }
-    // playbackProgress () {
-    //   setTimeout(() => {
-    //     this.playback().then((playbackStatus) => {
-    //       if (playbackStatus) {
-    //         this.loadCurrentTrack()
-    //         console.log(playbackStatus.device)
-    //         this.volume = playbackStatus.device.volume_percent
-    //         clearInterval(this.secondInterval)
-    //         this.progress = playbackStatus.progress_ms
-    //         this.songDuration = playbackStatus.item.duration_ms
-    //         this.songCountdown()
-    //         console.log('Progress', this.progress)
-    //         console.log('Duration', this.songDuration)
-    //       }
-    //     })
-    //   }, 1000)
-    // }
   },
   created () {
     this.getCurrentState()
