@@ -61,6 +61,7 @@ export function loadCurrentTrack ({ commit }) {
 export function previous ({ dispatch }) {
   return this._vm.$axios.post('https://api.spotify.com/v1/me/player/previous')
     .then((response) => {
+      console.log(response)
       if (response.status === 204) {
         console.log('Previous song')
         setTimeout(() => {
@@ -68,6 +69,17 @@ export function previous ({ dispatch }) {
           dispatch('spotify/loadCurrentTrack', null, { root: true })
         }, 300)
       }
+    })
+    .catch((error) => {
+      console.log(error)
+      this._vm.$q.notify({
+        color: 'warning',
+        position: 'top',
+        textColor: 'grey-9',
+        message: 'Nothing is currently playing!',
+        icon: 'report_problem'
+      })
+      return false
     })
 }
 
@@ -81,6 +93,17 @@ export function next ({ dispatch }) {
           dispatch('spotify/loadCurrentTrack', null, { root: true })
         }, 300)
       }
+    })
+    .catch((error) => {
+      console.log(error)
+      this._vm.$q.notify({
+        color: 'warning',
+        position: 'top',
+        textColor: 'grey-9',
+        message: 'Nothing is currently playing!',
+        icon: 'report_problem'
+      })
+      return false
     })
 }
 
@@ -117,6 +140,7 @@ export function setVolume ({ state }, payload) {
       this._vm.$q.notify({
         color: 'negative',
         position: 'top',
+        textColor: 'grey-9',
         message: `Can't control ${device}, Sorry :(`,
         icon: 'report_problem'
       })
@@ -141,11 +165,21 @@ export function playback ({ commit }) {
         console.log('Playback Status', playbackStatus)
         commit('setPlaybackStatus', playbackStatus)
         return playbackStatus
+      } else if (response.status === 204) {
+        this._vm.$q.notify({
+          color: 'warning',
+          position: 'top',
+          textColor: 'grey-9',
+          message: 'Nothing is currently playing!',
+          icon: 'report_problem'
+        })
+        return false
       }
     })
 }
 
 export async function loadLyrics ({ state }) {
+  if (!state.currentTrack) return false
   var trackName = state.currentTrack.item.name
   var trackArtist = state.currentTrack.item.artists.map(artist => artist.name)[0]
   const song = `${trackName} ${trackArtist}`
