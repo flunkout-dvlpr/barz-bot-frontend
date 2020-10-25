@@ -121,7 +121,9 @@ export default {
       }
     },
     updateProgress () {
-      this.setPlayback(this.progress)
+      this.setPlayback(this.progress).then(() => {
+        this.getCurrentState()
+      })
     },
     updateVolume () {
       this.setVolume(this.volume).then((response) => {
