@@ -24,6 +24,7 @@
           style="border-radius: 10px;"
           @hideCover="hideCover"
         />
+        <Controls />
     </q-card>
   </q-page>
 </template>
@@ -33,6 +34,7 @@ import { mapGetters, mapActions } from 'vuex'
 import User from 'components/User'
 import Track from 'components/Track'
 import Player from 'components/Player'
+import Controls from 'components/Controls'
 export default {
   name: 'PageIndex',
   data () {
@@ -43,7 +45,8 @@ export default {
   components: {
     User,
     Track,
-    Player
+    Player,
+    Controls
   },
   computed: {
     ...mapGetters('spotify', ['authorizationURL', 'token', 'user', 'currentTrack'])
