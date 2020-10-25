@@ -51,6 +51,7 @@ export function loadSpotifyToken ({ state }) {
 }
 
 export function loadCurrentTrack ({ commit, dispatch }) {
+  commit('genius/setLyrics', null, { root: true })
   return this._vm.$axios.get('https://api.spotify.com/v1/me/player/currently-playing')
     .then((response) => {
       if (response.status === 200) {
