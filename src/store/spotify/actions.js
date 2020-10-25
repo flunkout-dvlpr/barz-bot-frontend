@@ -1,4 +1,3 @@
-import cheerio from 'cheerio'
 
 export function loadAuthorizationCode ({ commit, state }) {
   var urlParameters = new URLSearchParams(window.location.search)
@@ -47,13 +46,18 @@ export function loadUser ({ commit }) {
     })
 }
 
-export function loadCurrentTrack ({ commit }) {
+export function loadSpotifyToken ({ state }) {
+  this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
+}
+
+export function loadCurrentTrack ({ commit, dispatch }) {
   return this._vm.$axios.get('https://api.spotify.com/v1/me/player/currently-playing')
     .then((response) => {
       if (response.status === 200) {
         var currentTrack = response.data
         console.log('Loading current track', currentTrack)
         commit('setCurrentTrack', currentTrack)
+        dispatch('genius/searchSong', null, { root: true })
       }
     })
 }
@@ -176,28 +180,4 @@ export function playback ({ commit }) {
         return false
       }
     })
-}
-
-export async function loadLyrics ({ state }) {
-  if (!state.currentTrack) return false
-  var trackName = state.currentTrack.item.name
-  var trackArtist = state.currentTrack.item.artists.map(artist => artist.name)[0]
-  const song = `${trackName} ${trackArtist}`
-  const token = 'eDCbzdAP1gOw5526VJfUPbU0B7DMmSk8EIN3AEXK6bEeL3r4fJKUJ53yl2_SXUWU'
-  const requestURL = `https://api.genius.com/search?q=${encodeURI(song)}&access_token=${token}`
-
-  // Create new axios instance without default headers (Authorization token)
-  var instance = this._vm.$axios.create()
-  delete instance.defaults.headers.common.Authorization
-  return instance.get(requestURL).then((request) => {
-    if (request.data.response.hits.length === 0) return null
-    var songURL = request.data.response.hits[0].result.url
-    var proxy = 'https://cors-anywhere.herokuapp.com/'
-    return instance.get(proxy + songURL).then((response) => {
-      const $ = cheerio.load(response.data)
-      var lyrics = $('div[class="lyrics"]').text().trim()
-      this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
-      return lyrics
-    })
-  })
 }
