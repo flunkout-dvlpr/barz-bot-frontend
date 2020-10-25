@@ -24,7 +24,9 @@
           style="border-radius: 10px;"
           @hideCover="hideCover"
         />
-        <Controls />
+        <Controls
+          v-if="token"
+        />
     </q-card>
   </q-page>
 </template>
