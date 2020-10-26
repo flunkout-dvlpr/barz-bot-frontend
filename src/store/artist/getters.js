@@ -1,4 +1,4 @@
-/*
-export function someGetter (state) {
+
+export function artworkURL (state) {
+  return state.artworkURL
 }
-*/
