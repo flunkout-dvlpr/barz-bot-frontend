@@ -1,5 +1,5 @@
 
-export function createArtwork ({ rootState, dispatch }, payload) {
+export function createArtwork ({ rootState, dispatch, commit }, payload) {
   var body = {
     user: rootState.spotify.user.display_name,
     imageURL: rootState.spotify.currentTrack.item.album.images[0].url,
@@ -10,6 +10,7 @@ export function createArtwork ({ rootState, dispatch }, payload) {
   var apiBaseURL = process.env.PROD ? 'https://zwsuf4ozgj.execute-api.us-east-2.amazonaws.com/Prod' : 'http://127.0.0.1:3000'
   return instance.post(`${apiBaseURL}/artwork/create`, body).then((response) => {
     dispatch('spotify/loadSpotifyToken', null, { root: true })
-    console.log(response)
+    commit('setArtworkURL', response.data.payload)
+    return response.data.payload
   })
 }
