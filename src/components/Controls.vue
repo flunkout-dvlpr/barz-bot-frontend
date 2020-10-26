@@ -69,6 +69,7 @@
           class="q-ma-sm"
           label="Create Art!"
           color="secondary"
+          @click="createArtwork(selected)"
         />
       </div>
       <q-table
@@ -102,7 +103,7 @@ export default {
           required: true,
           label: 'Lines',
           align: 'center',
-          field: row => row.line,
+          field: row => row.text,
           format: val => `${val}`,
           sortable: false
         }
@@ -131,12 +132,13 @@ export default {
           if (line && !(line.includes('['))) {
             return line
           }
-        }).map((line, idx) => ({ line: line, id: idx }))
+        }).map((line, idx) => ({ text: line, id: idx }))
       }
       return []
     }
   },
   methods: {
+    ...mapActions('artist', ['createArtwork']),
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback']),
     resetSelection () {
       this.selected = []
