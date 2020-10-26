@@ -69,7 +69,7 @@
           class="q-ma-sm"
           label="Create Art!"
           color="secondary"
-          @click="createArtwork(selected)"
+          @click="showArtwork()"
         />
       </div>
       <q-table
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import ArtworkDownload from 'components/ArtworkDownload'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Controls',
@@ -146,6 +147,16 @@ export default {
     showLyrics () {
       this.displayLyrics = !this.displayLyrics
       this.controls = false
+    },
+    showArtwork () {
+      this.createArtwork(this.selected).then((response) => {
+        console.log(response)
+        this.$q.dialog({
+          component: ArtworkDownload,
+          parent: this,
+          url: response
+        })
+      })
     },
     updateProgress () {
       this.setPlayback(this.progress).then(() => {
