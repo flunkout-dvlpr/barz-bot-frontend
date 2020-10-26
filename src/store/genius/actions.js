@@ -10,9 +10,9 @@ export function searchSong ({ rootState, dispatch, commit }) {
   var instance = this._vm.$axios.create()
   delete instance.defaults.headers.common.Authorization
   return instance.get(`https://api.genius.com/search?q=${encodeURI(song)}&access_token=${token}`).then((request) => {
+    dispatch('spotify/loadSpotifyToken', null, { root: true })
     if (request.data.response.hits.length === 0) return null
     var songURL = request.data.response.hits[0].result.url
-    dispatch('spotify/loadSpotifyToken', null, { root: true })
     commit('setSongURL', songURL)
     dispatch('genius/loadLyrics', null, { root: true })
   })
@@ -24,8 +24,8 @@ export function loadLyrics ({ state, dispatch, commit }) {
 
   var apiBaseURL = process.env.PROD ? 'https://zwsuf4ozgj.execute-api.us-east-2.amazonaws.com/Prod' : 'http://127.0.0.1:3000'
   return instance.post(`${apiBaseURL}/genius/get-lyrics-by-url`, state.songURL).then((response) => {
-    var lyrics = response.data.payload
     dispatch('spotify/loadSpotifyToken', null, { root: true })
+    var lyrics = response.data.payload
     commit('setLyrics', lyrics)
     return lyrics
   })
