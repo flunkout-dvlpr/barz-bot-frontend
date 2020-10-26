@@ -1,6 +1,6 @@
 <template>
   <q-page class="column flex flex-center bg-primary" style="height: auto;">
-    <q-card class="bg-accent" style="width: 350px; border-radius: 10px;">
+    <q-card class="q-my-md bg-accent" style="width: 350px; border-radius: 10px;">
         <q-btn
           v-if="!token"
           class="bg-secondary text-primary row q-ma-sm"
