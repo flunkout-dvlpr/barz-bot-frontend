@@ -63,15 +63,29 @@
       </q-item>
     </div>
     <div v-show="displayLyrics && lyrics">
-      <q-scroll-area style="height: 350px;">
-        <div
-          class="text-white"
-          v-for="line in lyrics"
-          :key="line.id"
-        >
-          {{ line }}
-        </div>
-      </q-scroll-area>
+      <div align="center" v-show="selected.length">
+        <q-btn
+          size="sm"
+          class="q-ma-sm"
+          label="Create Art!"
+          color="secondary"
+        />
+      </div>
+      <q-table
+        dark
+        dense
+        wrap-cells
+        hide-header
+        hide-pagination
+        virtual-scroll
+        :rows-per-page-options="[0]"
+        :columns="columns"
+        :data="lyricsInRows"
+        row-key="id"
+        selection="multiple"
+        :selected.sync="selected"
+        style="max-width: 375px; max-height: 350px;"
+      />
     </div>
   </q-card-section>
 </template>
@@ -82,6 +96,18 @@ export default {
   name: 'Controls',
   data () {
     return {
+      columns: [
+        {
+          name: 'desc',
+          required: true,
+          label: 'Lines',
+          align: 'center',
+          field: row => row.line,
+          format: val => `${val}`,
+          sortable: false
+        }
+      ],
+      selected: [],
       volume: 0,
       progress: 0,
       songDuration: 0,
@@ -97,10 +123,24 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('genius', ['lyrics'])
+    ...mapGetters('genius', ['lyrics']),
+    lyricsInRows () {
+      this.resetSelection()
+      if (this.lyrics) {
+        return this.lyrics.filter(line => {
+          if (line && !(line.includes('['))) {
+            return line
+          }
+        }).map((line, idx) => ({ line: line, id: idx }))
+      }
+      return []
+    }
   },
   methods: {
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback']),
+    resetSelection () {
+      this.selected = []
+    },
     showLyrics () {
       this.displayLyrics = !this.displayLyrics
       this.controls = false
