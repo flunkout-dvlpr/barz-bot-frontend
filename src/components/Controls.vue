@@ -1,6 +1,7 @@
 <template>
   <q-card-section>
     <div class="row">
+      <div v-show="false">{{monitorCurrentTrack}}</div>
       <div class="col-6" align="left">
         <q-btn
           class="q-ma-none"
@@ -129,7 +130,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('spotify', ['currentTrack']),
     ...mapGetters('genius', ['lyrics']),
+    monitorCurrentTrack () {
+      this.getCurrentState()
+      return this.currentTrack
+    },
     lyricsInRows () {
       this.resetSelection()
       if (this.lyrics) {
@@ -145,22 +151,29 @@ export default {
   methods: {
     ...mapActions('artist', ['createArtwork']),
     ...mapActions('genius', ['loadLyrics']),
-    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback']),
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback', 'loadSpotifyToken']),
     resetSelection () {
       this.selected = []
     },
     showLyrics () {
       this.loadingLyrics = true
-      this.loadLyrics().then(() => {
+      if (this.lyrics) {
+        this.getCurrentState()
         this.loadingLyrics = false
         this.displayLyrics = !this.displayLyrics
         this.controls = false
-      })
+      } else {
+        this.loadLyrics().then(() => {
+          this.loadingLyrics = false
+          this.displayLyrics = !this.displayLyrics
+          this.controls = false
+          this.getCurrentState()
+        })
+      }
     },
     showArtwork () {
       this.loadingArtwork = true
       this.createArtwork(this.selected).then((response) => {
-        console.log(response)
         this.loadingArtwork = false
         this.$q.dialog({
           component: ArtworkDownload,
@@ -182,15 +195,17 @@ export default {
       })
     },
     getCurrentState () {
-      this.playback().then((playbackStatus) => {
-        if (!playbackStatus) return null
-        if (playbackStatus.is_playing) {
-          this.volume = playbackStatus.device.volume_percent
-          clearInterval(this.secondInterval)
-          this.progress = playbackStatus.progress_ms
-          this.songDuration = playbackStatus.item.duration_ms
-          this.songCountdown()
-        }
+      this.loadSpotifyToken().then(() => {
+        this.playback().then((playbackStatus) => {
+          if (!playbackStatus) return null
+          if (playbackStatus.is_playing) {
+            this.volume = playbackStatus.device.volume_percent
+            clearInterval(this.secondInterval)
+            this.progress = playbackStatus.progress_ms
+            this.songDuration = playbackStatus.item.duration_ms
+            this.songCountdown()
+          }
+        })
       })
     },
     loadControls () {
