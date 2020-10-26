@@ -48,6 +48,7 @@ export function loadUser ({ commit }) {
 
 export function loadSpotifyToken ({ state }) {
   this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
+  return true
 }
 
 export function loadCurrentTrack ({ commit, dispatch }) {
