@@ -1,21 +1,20 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide" persistent>
     <q-card dark class="text-grey-1" style="width: 365px;">
-      <q-card-section class="row items-center">
-        <span class="q-ml-sm">Here's your artwork!</span>
+      <q-card-section align="center" class="bg-accent">
+        <span class="text-h6 q-ml-sm">Here's your artwork!</span>
       </q-card-section>
       <q-card-section class="row items-center">
         <q-img
           :src="url"
         />
       </q-card-section>
-      <q-card-actions align="right">
-        <q-btn flat class="text-grey-1" label="Cancel" color="primary" v-close-popup />
+      <q-card-actions align="right" class="bg-accent">
+        <q-btn class="text-grey-1" label="Cancel" color="secondary" v-close-popup />
         <q-btn
-          flat
           class="text-grey-1"
           label="Download"
-          color="primary"
+          color="secondary"
           type="a"
           target="_blank"
           :href="url"
