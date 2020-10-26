@@ -10,6 +10,7 @@
           icon="notes"
           label="Lyrics"
           @click="showLyrics()"
+          :loading="loadingLyrics"
         />
       </div>
       <div class="col-6" align="right">
@@ -70,6 +71,7 @@
           label="Create Art!"
           color="secondary"
           @click="showArtwork()"
+          :loading="loadingArtwork"
         />
       </div>
       <q-table
@@ -114,7 +116,9 @@ export default {
       progress: 0,
       songDuration: 0,
       controls: false,
-      displayLyrics: false
+      displayLyrics: false,
+      loadingArtwork: false,
+      loadingLyrics: false
     }
   },
   filters: {
@@ -140,17 +144,24 @@ export default {
   },
   methods: {
     ...mapActions('artist', ['createArtwork']),
+    ...mapActions('genius', ['loadLyrics']),
     ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback']),
     resetSelection () {
       this.selected = []
     },
     showLyrics () {
-      this.displayLyrics = !this.displayLyrics
-      this.controls = false
+      this.loadingLyrics = true
+      this.loadLyrics().then(() => {
+        this.loadingLyrics = false
+        this.displayLyrics = !this.displayLyrics
+        this.controls = false
+      })
     },
     showArtwork () {
+      this.loadingArtwork = true
       this.createArtwork(this.selected).then((response) => {
         console.log(response)
+        this.loadingArtwork = false
         this.$q.dialog({
           component: ArtworkDownload,
           parent: this,
