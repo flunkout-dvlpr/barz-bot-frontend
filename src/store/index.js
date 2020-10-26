@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import spotify from './spotify'
 import genius from './genius'
+import artist from './artist'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       spotify,
-      genius
+      genius,
+      artist
     },
     plugins: [createPersistedState({
       storage: window.sessionStorage
