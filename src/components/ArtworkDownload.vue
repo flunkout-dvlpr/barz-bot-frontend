@@ -20,6 +20,15 @@
           :href="url"
           v-close-popup
         />
+        <q-btn
+          class="text-grey-1"
+          label="Tweet"
+          color="secondary"
+          type="a"
+          target="_blank"
+           :href="`https://twitter.com/intent/tweet?url=${twitterLink}`"
+          v-close-popup
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -31,6 +40,11 @@ export default {
   name: 'ArtworkDownload',
   props: {
     url: String
+  },
+  data () {
+    return {
+      twitterLink: null
+    }
   },
   computed: {
     ...mapGetters('artist', ['artworkURL'])
@@ -45,6 +59,11 @@ export default {
     onDialogHide () {
       this.$emit('hide')
     }
+  },
+  created () {
+    var pathname = new URL(this.artworkURL).pathname
+    this.twitterLink = `https://s3.us-east-2.amazonaws.com/webapp-barz-bot/index.html#/artwork${pathname}`
+    console.log(this.twitterLink)
   }
 }
 </script>
