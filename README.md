@@ -1,4 +1,4 @@
-# Barz Bot (barz-bot)
+# Barz Bot (barz-bot-backend)
 
 Barz Bot, Get Me The Lyrics!
 
