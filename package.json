@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "genius-lyrics-api": "^3.0.3",
     "quasar": "^1.0.0",
+    "vue-meta": "^2.4.0",
     "vuex-persistedstate": "^3.1.0"
   },
   "devDependencies": {
