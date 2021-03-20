@@ -10,7 +10,7 @@
         />
       </q-card-section>
       <q-card-actions align="right" class="bg-accent">
-        <q-btn class="text-grey-1" label="Cancel" color="secondary" v-close-popup />
+        <q-btn class="text-grey-1" label="Close" color="secondary" v-close-popup />
         <q-btn
           class="text-grey-1"
           label="Download"
@@ -18,7 +18,6 @@
           type="a"
           target="_blank"
           :href="url"
-          v-close-popup
         />
         <q-btn
           class="text-grey-1"
@@ -26,8 +25,7 @@
           color="secondary"
           type="a"
           target="_blank"
-           :href="`https://twitter.com/intent/tweet?url=${twitterLink}`"
-          v-close-popup
+           :href="`https://twitter.com/intent/tweet?text=${lyricsText}&url=${twitterLink}`"
         />
       </q-card-actions>
     </q-card>
@@ -39,11 +37,13 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'ArtworkDownload',
   props: {
-    url: String
+    url: String,
+    lyrics: Array
   },
   data () {
     return {
-      twitterLink: null
+      twitterLink: null,
+      lyricsText: null
     }
   },
   computed: {
@@ -62,8 +62,11 @@ export default {
   },
   created () {
     var pathname = new URL(this.artworkURL).pathname
-    this.twitterLink = `https://s3.us-east-2.amazonaws.com/webapp-barz-bot/index.html#/artwork${pathname}`
+    var htmlPathName = pathname.replace('.jpeg', '.html')
+    this.twitterLink = `https://images-barz-bot.s3.us-east-2.amazonaws.com${htmlPathName}`
     console.log(this.twitterLink)
+    this.lyricsText = this.lyrics.map(lyric => lyric.text).join('%0D%0A').concat('%0D%0A-Created Using @BarzBot%0D%0A')
+    console.log(this.lyricsText)
   }
 }
 </script>
