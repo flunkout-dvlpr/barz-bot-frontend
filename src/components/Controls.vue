@@ -178,7 +178,8 @@ export default {
         this.$q.dialog({
           component: ArtworkDownload,
           parent: this,
-          url: response
+          url: response,
+          lyrics: this.selected
         })
       })
     },
