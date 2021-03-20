@@ -2,6 +2,8 @@
 export function createArtwork ({ rootState, dispatch, commit }, payload) {
   var body = {
     user: rootState.spotify.user.display_name,
+    song: rootState.spotify.currentTrack.item.name,
+    artist: rootState.spotify.currentTrack.item.artists[0].name,
     imageURL: rootState.spotify.currentTrack.item.album.images[0].url,
     lyrics: payload
   }
