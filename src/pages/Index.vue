@@ -3,12 +3,25 @@
     <q-card class="q-my-md bg-accent" style="width: 350px; border-radius: 10px;">
         <q-btn
           no-caps
-          v-if="!token"
+          v-if="!user"
           class="bg-secondary text-primary row q-ma-sm"
           type="a"
           label="Log in to Spotify"
           :href="authorizationURL"
         />
+        <q-input
+          dark
+          outlined
+          v-model="songURL"
+          class="row q-ma-sm"
+          label="Or Paste Spotify Song Link"
+          placeholder="https://open.spotify.com/track/trackID"
+          @input="lookUpSong"
+        >
+          <template v-slot:prepend>
+            <q-icon name="link" />
+          </template>
+        </q-input>
         <User
           v-if="user"
           class="col q-pa-none q-mx-sm q-mt-sm"
@@ -20,7 +33,7 @@
           :track="currentTrack"
         />
         <Player
-          v-if="token"
+          v-if="token && user"
           class="col q-ma-sm bg-primary"
           style="border-radius: 10px;"
           @hideCover="hideCover"
@@ -42,7 +55,8 @@ export default {
   name: 'PageIndex',
   data () {
     return {
-      displayingLyrics: false
+      displayingLyrics: false,
+      songURL: null
     }
   },
   components: {
@@ -55,10 +69,21 @@ export default {
     ...mapGetters('spotify', ['authorizationURL', 'token', 'user', 'currentTrack'])
   },
   methods: {
-    ...mapActions('spotify', ['loadAuthorizationCode', 'loadAccessCode', 'loadCurrentTrack']),
+    ...mapActions('spotify', ['loadAuthorizationCode', 'loadAccessCode', 'loadAccessCodeFromClientCredentials', 'loadCurrentTrack', 'loadTrackFromId']),
     hideCover () {
       console.log('Hide cover!')
       this.displayingLyrics = !this.displayingLyrics
+    },
+    lookUpSong (url) {
+      // https://open.spotify.com/track/49nkBg3OJtp6m6TQPmG1Qw?si=pU9ZPDrERaq88I8FAix9BQ
+      var trackId = new URL(url).pathname.replace('/track/', '')
+      if (!this.token) {
+        console.log('Loading Access Code From Client Credentials')
+        this.loadAccessCodeFromClientCredentials().then((response) => {
+          this.loadTrackFromId(trackId)
+        })
+      }
+      this.loadTrackFromId(trackId)
     }
   },
   mounted () {
