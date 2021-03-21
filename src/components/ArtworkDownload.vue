@@ -47,7 +47,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('artist', ['artworkURL'])
+    ...mapGetters('artist', ['artworkURL']),
+    ...mapGetters('spotify', ['currentTrack'])
   },
   methods: {
     show () {
@@ -65,7 +66,9 @@ export default {
     var htmlPathName = pathname.replace('.jpeg', '.html')
     this.twitterLink = `https://images-barz-bot.s3.us-east-2.amazonaws.com${htmlPathName}`
     console.log(this.twitterLink)
-    this.lyricsText = this.lyrics.map(lyric => lyric.text).join('%0D%0A').concat('%0D%0A-Created Using @BarzBot%0D%0A')
+    this.lyricsText = this.lyrics.map(lyric => lyric.text).join('%0D%0A')
+    this.lyricsText = this.lyricsText.concat(`%0D%0A-${this.currentTrack.item.name} by ${this.currentTrack.item.artists[0].name}`)
+    this.lyricsText = this.lyricsText.concat('%0D%0A@BarzBot%0D%0A')
     console.log(this.lyricsText)
   }
 }
