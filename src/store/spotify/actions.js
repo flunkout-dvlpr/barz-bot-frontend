@@ -1,12 +1,13 @@
 
 export function loadAuthorizationCode ({ commit, state }) {
   var urlParameters = new URLSearchParams(window.location.search)
-  if (urlParameters.get('code') && !state.token) {
+  if (urlParameters.get('code') && !state.user) {
     var authorizationCode = urlParameters.get('code')
     console.log('Loading authorization code')
     return authorizationCode
   } else {
     // An access token is already set
+    console.log('not logging in tho')
     return null
   }
 }
@@ -35,6 +36,27 @@ export function loadAccessCode ({ dispatch, commit, state }, authorizationCode) 
     })
 }
 
+export function loadAccessCodeFromClientCredentials ({ dispatch, commit, state }) {
+  var body = new URLSearchParams({
+    grant_type: 'client_credentials'
+  })
+  var headers = {
+    headers: {
+      Authorization: 'Basic ' + btoa(state.client_id + ':' + state.client_secret)
+    }
+  }
+  return this._vm.$axios.post('https://accounts.spotify.com/api/token', body.toString(), headers)
+    .then((response) => {
+      console.log(response)
+      if (response.status === 200) {
+        var token = response.data.access_token
+        console.log('Loading (Client Credentials) token')
+        this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${token}`
+        commit('setToken', token)
+      }
+    })
+}
+
 export function loadUser ({ commit }) {
   return this._vm.$axios.get('https://api.spotify.com/v1/me')
     .then((response) => {
@@ -59,6 +81,20 @@ export function loadCurrentTrack ({ commit, dispatch }) {
         var currentTrack = response.data
         console.log('Loading current track', currentTrack)
         commit('setCurrentTrack', currentTrack)
+        dispatch('genius/searchSong', null, { root: true })
+      }
+    })
+}
+
+export function loadTrackFromId ({ commit, dispatch }, trackId) {
+  commit('genius/setLyrics', null, { root: true })
+  return this._vm.$axios.get(`https://api.spotify.com/v1/tracks/${trackId}`)
+    .then((response) => {
+      console.log(response)
+      if (response.status === 200) {
+        var currentTrack = response.data
+        console.log('Loading current track', { item: currentTrack })
+        commit('setCurrentTrack', { item: currentTrack })
         dispatch('genius/searchSong', null, { root: true })
       }
     })
