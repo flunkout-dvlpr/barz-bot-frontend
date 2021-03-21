@@ -26,9 +26,9 @@ export default {
     welcomeMessage () {
       if (this.user) {
         console.log(this.user)
-        return `Wuz Up,  ${this.user.display_name}!`
+        return `Let's Jam ${this.user.display_name}!`
       }
-      return 'Wuz Up!'
+      return "Let's Jam!"
     }
   }
 }
