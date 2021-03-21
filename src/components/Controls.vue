@@ -4,6 +4,7 @@
       <div v-show="false">{{monitorCurrentTrack}}</div>
       <div class="col-6" align="left">
         <q-btn
+          no-caps
           class="q-ma-none"
           color="grey"
           flat
@@ -16,6 +17,7 @@
       </div>
       <div class="col-6" align="right">
         <q-btn
+          no-caps
           class="q-ma-none"
           color="grey"
           flat
@@ -67,6 +69,7 @@
     <div v-show="displayLyrics && lyrics">
       <div align="center" v-show="selected.length">
         <q-btn
+          no-caps
           size="sm"
           class="q-ma-sm"
           label="Create Art!"
