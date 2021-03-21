@@ -1,32 +1,46 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide" persistent>
-    <q-card dark class="text-grey-1" style="width: 365px;">
+    <q-card dark class="text-grey-1" style="width: 20rem">
       <q-card-section align="center" class="bg-accent">
         <span class="text-h6 q-ml-sm">Here's your artwork!</span>
       </q-card-section>
-      <q-card-section class="row items-center">
+      <q-card-section>
         <q-img
           :src="url"
         />
       </q-card-section>
-      <q-card-actions align="right" class="bg-accent">
-        <q-btn class="text-grey-1" label="Close" color="secondary" v-close-popup />
-        <q-btn
-          class="text-grey-1"
-          label="Download"
-          color="secondary"
-          type="a"
-          target="_blank"
-          :href="url"
-        />
-        <q-btn
-          class="text-grey-1"
-          label="Tweet"
-          color="secondary"
-          type="a"
-          target="_blank"
-           :href="`https://twitter.com/intent/tweet?text=${lyricsText}&url=${twitterLink}`"
-        />
+      <q-card-actions class="row justify-around bg-accent">
+        <div class="col-3">
+          <q-btn
+            no-caps
+            class="fit text-grey-1"
+            label="Close"
+            color="secondary"
+            v-close-popup
+          />
+        </div>
+        <div class="col-3">
+          <q-btn
+            no-caps
+            class="fit text-grey-1"
+            label="Download"
+            color="secondary"
+            type="a"
+            target="_blank"
+            :href="url"
+          />
+        </div>
+        <div class="col-3">
+          <q-btn
+            no-caps
+            class="fit text-grey-1"
+            label="Tweet"
+            color="secondary"
+            type="a"
+            target="_blank"
+             :href="`https://twitter.com/intent/tweet?text=${lyricsText}&url=${twitterLink}`"
+          />
+        </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
