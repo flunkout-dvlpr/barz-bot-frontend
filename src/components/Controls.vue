@@ -18,6 +18,7 @@
       <div class="col-6" align="right">
         <q-btn
           no-caps
+          :disable="!user"
           class="q-ma-none"
           color="grey"
           flat
@@ -133,7 +134,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('spotify', ['currentTrack']),
+    ...mapGetters('spotify', ['currentTrack', 'user']),
     ...mapGetters('genius', ['lyrics']),
     monitorCurrentTrack () {
       this.getCurrentState()
@@ -199,6 +200,7 @@ export default {
       })
     },
     getCurrentState () {
+      if (!this.user) return
       this.loadSpotifyToken().then(() => {
         this.playback().then((playbackStatus) => {
           if (!playbackStatus) return null
