@@ -1,99 +1,126 @@
 <template>
-  <q-card-section>
-    <div class="row">
-      <div v-show="false">{{monitorCurrentTrack}}</div>
-      <div class="col-6" align="left">
-        <q-btn
-          no-caps
-          class="q-ma-none"
-          color="grey"
-          flat
-          dense
-          icon="notes"
-          label="Lyrics"
-          @click="showLyrics()"
-          :loading="loadingLyrics"
-        />
-      </div>
-      <div class="col-6" align="right">
-        <q-btn
-          no-caps
-          :disable="!user"
-          class="q-ma-none"
-          color="grey"
-          flat
-          dense
-          icon-right="videogame_asset"
-          label="Controls"
-          @click="loadControls()"
-        />
-      </div>
-    </div>
-    <div v-show="controls">
-      <q-item class="row justify-center q-py-none">
-        <q-item-section side>
-          <q-icon color="secondary" name="volume_down" />
-        </q-item-section>
-        <q-item-section>
-          <q-slider
-            v-model="volume"
-            :min="0"
-            :max="100"
-            dark
-            color="secondary"
-            @change="updateVolume()"
+  <q-card-section class="q-pa-none q-mx-sm q-my-md">
+    <div class="row justify-center">
+      <div v-if="user" class="row fit justify-between">
+        <div v-show="false">{{monitorCurrentTrack}}</div>
+        <div class="q-pr-sm col-4">
+          <q-btn
+            flat
+            dense
+            no-caps
+            class="fit bg-primary"
+            color="grey"
+            icon="notes"
+            label="Lyrics"
+            @click="showLyrics()"
+            :loading="loadingLyrics"
           />
-        </q-item-section>
-        <q-item-section side>
-          <q-icon color="secondary" name="volume_up" />
-        </q-item-section>
-      </q-item>
-      <q-item class="row justify-center q-py-none">
-        <q-item-section side>
-          <q-item-label caption class="text-white">{{ progress | msToMin }}</q-item-label>
-        </q-item-section>
-        <q-item-section>
-          <q-slider
-            v-model="progress"
-            :min="0"
-            :max="songDuration"
-            dark
-            color="secondary"
-            @change="updateProgress()"
+        </div>
+        <div class="q-px-sm col-4">
+          <q-btn
+            flat
+            dense
+            no-caps
+            class="fit bg-primary"
+            :disable="!user"
+            color="grey"
+            icon-right="sync"
+            label="Re-Sync"
+            @click="loadCurrentTrack()"
           />
-        </q-item-section>
-        <q-item-section side>
-          <q-item-label caption class="text-white">{{ songDuration | msToMin }}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </div>
-    <div v-show="displayLyrics && lyrics">
-      <div align="center" v-show="selected.length">
-        <q-btn
-          no-caps
-          size="sm"
-          class="q-ma-sm"
-          label="Create Art!"
-          color="secondary"
-          @click="showArtwork()"
-          :loading="loadingArtwork"
+        </div>
+        <div class="q-pl-sm col-4">
+          <q-btn
+            flat
+            dense
+            no-caps
+            class="fit bg-primary"
+            :disable="!user"
+            color="grey"
+            icon-right="videogame_asset"
+            label="Controls"
+            @click="loadControls()"
+          />
+        </div>
+      </div>
+      <div
+        v-show="controls"
+        class="row fit justify-between q-mt-md bg-primary"
+        style="border-radius: 10px;"
+      >
+        <q-item class="col-12">
+          <q-item-section side>
+            <q-icon color="secondary" name="volume_down" />
+          </q-item-section>
+          <q-item-section>
+            <q-slider
+              v-model="volume"
+              :min="0"
+              :max="100"
+              dark
+              color="secondary"
+              @change="updateVolume()"
+            />
+          </q-item-section>
+          <q-item-section side>
+            <q-icon color="secondary" name="volume_up" />
+          </q-item-section>
+        </q-item>
+        <q-item class="col-12">
+          <q-item-section side>
+            <q-item-label caption class="text-white">{{ progress | msToMin }}</q-item-label>
+          </q-item-section>
+          <q-item-section>
+            <q-slider
+              v-model="progress"
+              :min="0"
+              :max="songDuration"
+              dark
+              color="secondary"
+              @change="updateProgress()"
+            />
+          </q-item-section>
+          <q-item-section side>
+            <q-item-label caption class="text-white">{{ songDuration | msToMin }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </div>
+      <div
+        v-show="displayLyrics && lyrics"
+        class="row fit justify-center q-mt-md bg-primary"
+        style="border-radius: 10px;"
+      >
+        <div class="q-my-sm col-4">
+          <q-btn
+            dense
+            :disabled="!selected.length"
+            no-caps
+            class="fit"
+            label="Create Art!"
+            color="secondary"
+            icon="palette"
+            @click="showArtwork()"
+            :loading="loadingArtwork"
+          />
+        </div>
+        <q-table
+          dark
+          dense
+          flat
+          wrap-cells
+          hide-header
+          hide-pagination
+          virtual-scroll
+          :rows-per-page-options="[0]"
+          :columns="columns"
+          :data="lyricsInRows"
+          row-key="id"
+          selection="multiple"
+          :selected.sync="selected"
+          style="max-height: 350px;"
+          class="fit"
         />
       </div>
-      <q-table
-        dark
-        dense
-        wrap-cells
-        hide-header
-        hide-pagination
-        virtual-scroll
-        :rows-per-page-options="[0]"
-        :columns="columns"
-        :data="lyricsInRows"
-        row-key="id"
-        selection="multiple"
-        :selected.sync="selected"
-        style="max-width: 375px; max-height: 350px;"
-      />
     </div>
   </q-card-section>
 </template>
@@ -121,7 +148,7 @@ export default {
       progress: 0,
       songDuration: 0,
       controls: false,
-      displayLyrics: false,
+      displayLyrics: true,
       loadingArtwork: false,
       loadingLyrics: false
     }
