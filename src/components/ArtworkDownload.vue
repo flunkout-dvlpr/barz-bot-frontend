@@ -1,47 +1,57 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide" persistent>
-    <q-card dark class="text-grey-1" style="width: 20rem">
-      <q-card-section align="center" class="bg-accent">
-        <span class="text-h6 q-ml-sm">Here's your artwork!</span>
+    <q-card
+      class="bg-accent"
+      style="border-radius: 10px; width: 100%"
+    >
+      <q-card-section class="q-pa-none q-my-sm">
+        <div class="row fit justify-center">
+          <div class="col-12 text-white text-h6 text-center">Here's your artwork!</div>
+        </div>
       </q-card-section>
-      <q-card-section>
-        <q-img
-          :src="url"
-        />
+      <q-card-section class="q-pa-none q-my-sm">
+        <div class="row fit justify-center">
+          <q-img
+            :src="url"
+            class="fit"
+          />
+        </div>
       </q-card-section>
-      <q-card-actions class="row justify-around bg-accent">
-        <div class="col-3">
-          <q-btn
-            no-caps
-            class="fit text-grey-1"
-            label="Close"
-            color="secondary"
-            v-close-popup
-          />
+      <q-card-section class="q-pa-none q-my-sm">
+        <div class="row fit justify-around">
+          <div class="col-3">
+            <q-btn
+              no-caps
+              class="fit text-grey-1"
+              label="Close"
+              color="secondary"
+              v-close-popup
+            />
+          </div>
+          <div class="col-3">
+            <q-btn
+              no-caps
+              class="fit text-grey-1"
+              label="Download"
+              color="secondary"
+              type="a"
+              target="_blank"
+              :href="url"
+            />
+          </div>
+          <div class="col-3">
+            <q-btn
+              no-caps
+              class="fit text-grey-1"
+              label="Tweet"
+              color="secondary"
+              type="a"
+              target="_blank"
+               :href="`https://twitter.com/intent/tweet?text=${lyricsText}&url=${twitterLink}`"
+            />
+          </div>
         </div>
-        <div class="col-3">
-          <q-btn
-            no-caps
-            class="fit text-grey-1"
-            label="Download"
-            color="secondary"
-            type="a"
-            target="_blank"
-            :href="url"
-          />
-        </div>
-        <div class="col-3">
-          <q-btn
-            no-caps
-            class="fit text-grey-1"
-            label="Tweet"
-            color="secondary"
-            type="a"
-            target="_blank"
-             :href="`https://twitter.com/intent/tweet?text=${lyricsText}&url=${twitterLink}`"
-          />
-        </div>
-      </q-card-actions>
+      </q-card-section>
     </q-card>
   </q-dialog>
 </template>
