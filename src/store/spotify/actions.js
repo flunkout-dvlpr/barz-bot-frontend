@@ -100,6 +100,20 @@ export function loadTrackFromId ({ commit, dispatch }, trackId) {
     })
 }
 
+export function loadTracksFromSearch ({ commit, dispatch }, songName) {
+  commit('genius/setLyrics', null, { root: true })
+  return this._vm.$axios.get(`https://api.spotify.com/v1/search?q=${songName}&type=track`)
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data.tracks.items
+      //   var currentTrack = response.data
+      //   console.log('Loading current track', { item: currentTrack })
+      //   commit('setCurrentTrack', { item: currentTrack })
+      //   dispatch('genius/searchSong', null, { root: true })
+      }
+    })
+}
+
 export function previous ({ dispatch }) {
   return this._vm.$axios.post('https://api.spotify.com/v1/me/player/previous')
     .then((response) => {
