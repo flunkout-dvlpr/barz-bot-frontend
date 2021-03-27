@@ -14,6 +14,9 @@ export function searchSong ({ rootState, dispatch, commit }) {
     if (request.data.response.hits.length === 0) return null
     var songURL = request.data.response.hits[0].result.url
     commit('setSongURL', songURL)
+    if (!rootState.spotify.user) {
+      dispatch('genius/loadLyrics', null, { root: true })
+    }
   })
 }
 
