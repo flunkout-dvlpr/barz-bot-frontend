@@ -1,12 +1,18 @@
 <template>
-  <q-card-section @click="showImage = !showImage">
-    <q-img
-      v-if="trackImage && showImage"
-      :src="trackImage"
-    />
-    <div class="bg-primary" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-      <div class="q-px-md q-pt-sm text-h6 text-white">{{ trackName }}</div>
-      <div class="q-px-md q-pb-sm text-subtitle2 text-white">by {{ trackArtists }}</div>
+  <q-card-section class="q-pa-none q-mx-sm q-mb-md" @click="showImage = !showImage">
+    <div
+      class="row justify-center bg-primary"
+      style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;"
+    >
+      <q-img
+        v-if="trackImage && showImage"
+        :src="trackImage"
+        class="fit"
+      />
+      <div class="fit">
+        <div class="q-px-md q-pt-sm q-bg-none text-h6 text-white">{{ trackName }}</div>
+        <div class="q-px-md q-pt-none q-pb-sm text-subtitle2 text-white">by {{ trackArtists }}</div>
+      </div>
     </div>
   </q-card-section>
 </template>
