@@ -25,7 +25,6 @@ export default {
     ...mapGetters('spotify', ['user']),
     welcomeMessage () {
       if (this.user) {
-        console.log(this.user)
         return `Let's Jam ${this.user.display_name}!`
       }
       return "Let's Jam!"
