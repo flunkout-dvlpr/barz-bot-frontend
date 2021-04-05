@@ -149,7 +149,7 @@ export default {
     ...mapGetters('spotify', ['authorizationURL', 'token', 'user', 'currentTrack'])
   },
   methods: {
-    ...mapActions('spotify', ['loadAuthorizationCode', 'loadAccessCode', 'loadAccessCodeFromClientCredentials', 'loadCurrentTrack', 'loadTrackFromId', 'loadTracksFromSearch']),
+    ...mapActions('spotify', ['play', 'loadAuthorizationCode', 'loadAccessCode', 'loadAccessCodeFromClientCredentials', 'loadCurrentTrack', 'loadTrackFromId', 'loadTracksFromSearch']),
     clearSongSearch () {
       console.log('cleared song')
       this.song = {
@@ -201,10 +201,19 @@ export default {
       if (this.songURL) {
         this.clearSongSearch()
         var trackId = new URL(this.songURL).pathname.replace('/track/', '')
-        console.log(trackId)
-        this.loadTrackFromId(trackId)
+        this.loadTrackFromId(trackId).then(() => {
+          console.log(trackId)
+          if (this.user) {
+            this.play(trackId)
+          }
+        })
       } else if (this.songId) {
-        this.loadTrackFromId(this.songId)
+        this.loadTrackFromId(this.songId).then(() => {
+          console.log(this.songId)
+          if (this.user) {
+            this.play(this.songId)
+          }
+        })
       }
     }
   },
