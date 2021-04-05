@@ -3,7 +3,7 @@ const token = 'UnTG00FLsgcgz_sM5hcxRrk5Wk0207GTXpo3M9f8RCY4G1QWYAT57C0vFbo_XLJ_'
 
 export function searchSong ({ rootState, dispatch, commit }) {
   if (!rootState.spotify.currentTrack) return false
-  var name = rootState.spotify.currentTrack.item.name
+  var name = rootState.spotify.currentTrack.item.name.replace(/ *\([^)]*\) */g, '')
   var artist = rootState.spotify.currentTrack.item.artists.map(artist => artist.name)[0]
   var song = `${name} ${artist}`
 
@@ -15,6 +15,7 @@ export function searchSong ({ rootState, dispatch, commit }) {
     var songURL = request.data.response.hits[0].result.url
     commit('setSongURL', songURL)
     if (!rootState.spotify.user) {
+      commit('setLyrics', null)
       dispatch('genius/loadLyrics', null, { root: true })
     }
   })
