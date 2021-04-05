@@ -1,7 +1,8 @@
 
 export function loadAuthorizationCode ({ commit, state }) {
+  commit('resetSpotify')
   var urlParameters = new URLSearchParams(window.location.search)
-  if (urlParameters.get('code') && !state.user) {
+  if (urlParameters.get('code')) {
     var authorizationCode = urlParameters.get('code')
     console.log('Loading authorization code')
     return authorizationCode
@@ -10,6 +11,28 @@ export function loadAuthorizationCode ({ commit, state }) {
     console.log('not logging in tho')
     return null
   }
+}
+
+export function refreshToken ({ dispatch, commit, state }) {
+  var body = new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token: state.refreshToken
+  })
+  var headers = {
+    headers: {
+      Authorization: 'Basic ' + btoa(state.client_id + ':' + state.client_secret)
+    }
+  }
+  return this._vm.$axios.post('https://accounts.spotify.com/api/token', body.toString(), headers)
+    .then((response) => {
+      if (response.status === 200) {
+        var token = response.data.access_token
+        this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${token}`
+        commit('setToken', token)
+        dispatch('spotify/loadUser', null, { root: true })
+        dispatch('spotify/loadCurrentTrack', null, { root: true })
+      }
+    })
 }
 
 export function loadAccessCode ({ dispatch, commit, state }, authorizationCode) {
@@ -27,9 +50,10 @@ export function loadAccessCode ({ dispatch, commit, state }, authorizationCode) 
     .then((response) => {
       if (response.status === 200) {
         var token = response.data.access_token
-        console.log('Loading token')
+        var refreshToken = response.data.refresh_token
         this._vm.$axios.defaults.headers.common.Authorization = `Bearer ${token}`
         commit('setToken', token)
+        commit('setRefreshToken', refreshToken)
         dispatch('spotify/loadUser', null, { root: true })
         dispatch('spotify/loadCurrentTrack', null, { root: true })
       }
@@ -106,10 +130,6 @@ export function loadTracksFromSearch ({ commit, dispatch }, songName) {
     .then((response) => {
       if (response.status === 200) {
         return response.data.tracks.items
-      //   var currentTrack = response.data
-      //   console.log('Loading current track', { item: currentTrack })
-      //   commit('setCurrentTrack', { item: currentTrack })
-      //   dispatch('genius/searchSong', null, { root: true })
       }
     })
 }
@@ -163,11 +183,17 @@ export function next ({ dispatch }) {
     })
 }
 
-export function play ({ dispatch }) {
-  return this._vm.$axios.put('https://api.spotify.com/v1/me/player/play')
+export function play ({ dispatch }, trackId) {
+  var body = {}
+  if (trackId) {
+    body = {
+      uris: [`spotify:track:${trackId}`]
+    }
+  }
+  return this._vm.$axios.put('https://api.spotify.com/v1/me/player/play', body)
     .then((response) => {
       console.log('Playing', response)
-      if (response.status === 204) {
+      if (response.status === 204 && !trackId) {
         dispatch('spotify/loadCurrentTrack', null, { root: true })
       }
     })
@@ -186,7 +212,6 @@ export function pause ({ dispatch }) {
 export function setVolume ({ state }, payload) {
   return this._vm.$axios.put('https://api.spotify.com/v1/me/player/volume?volume_percent=' + payload)
     .then((response) => {
-      console.log(response)
       if (response.status === 204) {
         return response.status
       }
