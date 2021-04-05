@@ -22,11 +22,10 @@
             dense
             no-caps
             class="fit bg-primary"
-            :disable="!user"
             color="grey"
-            icon-right="sync"
+            icon="sync"
             label="Re-Sync"
-            @click="loadCurrentTrack()"
+            @click="refreshToken()"
           />
         </div>
         <div class="q-pl-sm col-4">
@@ -43,47 +42,59 @@
           />
         </div>
       </div>
-      <div
-        v-show="controls"
-        class="row fit justify-between q-mt-md bg-primary"
-        style="border-radius: 10px;"
+      <transition
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
       >
-        <q-item class="col-12">
-          <q-item-section side>
-            <q-icon color="secondary" name="volume_down" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider
-              v-model="volume"
-              :min="0"
-              :max="100"
-              dark
-              color="secondary"
-              @change="updateVolume()"
-            />
-          </q-item-section>
-          <q-item-section side>
-            <q-icon color="secondary" name="volume_up" />
-          </q-item-section>
-        </q-item>
-        <q-item class="col-12">
-          <q-item-section side>
-            <q-item-label caption class="text-white">{{ progress | msToMin }}</q-item-label>
-          </q-item-section>
-          <q-item-section>
-            <q-slider
-              v-model="progress"
-              :min="0"
-              :max="songDuration"
-              dark
-              color="secondary"
-              @change="updateProgress()"
-            />
-          </q-item-section>
-          <q-item-section side>
-            <q-item-label caption class="text-white">{{ songDuration | msToMin }}</q-item-label>
-          </q-item-section>
-        </q-item>
+        <div
+          v-show="controls"
+          class="row fit justify-between q-mt-md bg-primary"
+          style="border-radius: 10px;"
+        >
+          <q-item class="col-12">
+            <q-item-section side>
+              <q-icon color="secondary" name="volume_down" />
+            </q-item-section>
+            <q-item-section>
+              <q-slider
+                v-model="volume"
+                :min="0"
+                :max="100"
+                dark
+                color="secondary"
+                @change="updateVolume()"
+              />
+            </q-item-section>
+            <q-item-section side>
+              <q-icon color="secondary" name="volume_up" />
+            </q-item-section>
+          </q-item>
+          <q-item class="col-12">
+            <q-item-section side>
+              <q-item-label caption class="text-white">{{ progress | msToMin }}</q-item-label>
+            </q-item-section>
+            <q-item-section>
+              <q-slider
+                v-model="progress"
+                :min="0"
+                :max="songDuration"
+                dark
+                color="secondary"
+                @change="updateProgress()"
+              />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label caption class="text-white">{{ songDuration | msToMin }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </div>
+      </transition>
+      <div
+        v-show="!lyrics && currentTrack && !user"
+        class="row fit justify-center"
+      >
+        <div class="col-12 text-white text-center">Loading Lyrics</div>
+        <q-linear-progress dark rounded indeterminate color="secondary"/>
       </div>
       <div
         v-show="displayLyrics && lyrics"
@@ -182,7 +193,7 @@ export default {
   methods: {
     ...mapActions('artist', ['createArtwork']),
     ...mapActions('genius', ['loadLyrics']),
-    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback', 'loadSpotifyToken']),
+    ...mapActions('spotify', ['loadCurrentTrack', 'playback', 'setVolume', 'setPlayback', 'loadSpotifyToken', 'refreshToken']),
     resetSelection () {
       this.selected = []
     },
@@ -194,9 +205,10 @@ export default {
         this.displayLyrics = !this.displayLyrics
         this.controls = false
       } else {
+        this.displayLyrics = false
         this.loadLyrics().then(() => {
           this.loadingLyrics = false
-          this.displayLyrics = !this.displayLyrics
+          this.displayLyrics = true
           this.controls = false
           this.getCurrentState()
         })
