@@ -205,10 +205,9 @@ export default {
         this.displayLyrics = !this.displayLyrics
         this.controls = false
       } else {
-        this.displayLyrics = false
         this.loadLyrics().then(() => {
           this.loadingLyrics = false
-          this.displayLyrics = true
+          this.displayLyrics = !this.displayLyrics
           this.controls = false
           this.getCurrentState()
         })
