@@ -18,10 +18,10 @@ phases:
       #build 
       - echo Building...
       - npm install
-      - quasar build
+      - quasar build -m pwa
 
 artifacts:
   files:
     - "**/*"
   discard-paths: no
-  base-directory: dist/spa
+  base-directory: dist/pwa
