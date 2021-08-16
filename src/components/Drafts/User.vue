@@ -1,7 +1,7 @@
 <template>
-  <q-card-section class="q-pa-none q-mx-sm q-mt-md">
+  <q-card-section>
     <div
-      class="row justify-center bg-primary"
+      class="row justify-center items-center content-center q-pa-xs bg-brand-4"
       style="border-top-left-radius: 10px; border-top-right-radius: 10px;"
     >
       <q-item class="fit" >
@@ -9,14 +9,14 @@
           <q-btn round type="a" :href="userLink">
             <q-avatar color="dark" round size="64px">
               <img v-if="userImage" :src="userImage">
-              <q-icon v-else name="person" color="secondary" />
+              <q-icon v-else name="person" color="brand-7" />
             </q-avatar>
           </q-btn>
         </q-item-section>
 
         <q-item-section>
           <q-item-label class="text-h6 text-white">
-            <q-badge align="middle" color="secondary" class="text-dark"> {{ userSubcription }} </q-badge>
+            <q-badge align="middle" color="brand-7" class="text-dark"> {{ userSubcription }} </q-badge>
             <br>
             {{ userName }}
           </q-item-label>
@@ -32,12 +32,11 @@
   </q-card-section>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'User',
-  props: {
-    user: Object
-  },
   computed: {
+    ...mapGetters('spotify', ['user']),
     userName () {
       if (this.user) {
         return this.user.display_name
@@ -90,5 +89,3 @@ export default {
   }
 }
 </script>
-<style>
-</style>

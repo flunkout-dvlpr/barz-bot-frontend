@@ -1,16 +1,18 @@
 <template>
-  <q-card-section class="q-pa-none q-mx-sm q-mb-md" @click="showImage = !showImage">
+  <q-card-section @click="showImage = !showImage">
     <div
-      class="row justify-center bg-primary"
+      class="row justify-center items-center content-center q-pb-xs bg-brand-4"
       style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;"
     >
-      <q-img
-        v-if="trackImage && showImage"
-        :src="trackImage"
-        class="fit"
-      />
-      <div class="fit">
-        <div class="q-px-md q-pt-sm q-bg-none text-h6 text-white">{{ trackName }}</div>
+      <div class="col-12">
+        <q-img
+          v-if="trackImage && showImage"
+          :src="trackImage"
+          class="fit"
+        />
+      </div>
+      <div class="col-12">
+        <div class="q-px-md q-pt-sm q-pb-none text-h6 text-white">{{ trackName }}</div>
         <div class="q-px-md q-pt-none q-pb-sm text-subtitle2 text-white">by {{ trackArtists }}</div>
       </div>
     </div>
@@ -18,6 +20,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Track',
   data () {
@@ -25,13 +28,11 @@ export default {
       showImage: true
     }
   },
-  props: {
-    track: Object
-  },
   computed: {
+    ...mapGetters('spotify', ['user', 'currentTrack']),
     trackName () {
-      if (this.track) {
-        var trackName = this.track.item.name
+      if (this.currentTrack) {
+        var trackName = this.currentTrack.item.name
         if (trackName.includes('(')) {
           return trackName.substring(0, trackName.indexOf('('))
         }
@@ -41,8 +42,8 @@ export default {
       }
     },
     trackArtists () {
-      if (this.track) {
-        var trackArtists = this.track.item.artists.map(artist => artist.name)
+      if (this.currentTrack) {
+        var trackArtists = this.currentTrack.item.artists.map(artist => artist.name)
         if (trackArtists.length > 1) {
           return trackArtists[0] + ' ft. ' + trackArtists.slice(1).join(', ')
         }
@@ -52,8 +53,8 @@ export default {
       }
     },
     trackImage () {
-      if (this.track) {
-        return this.track.item.album.images[0].url
+      if (this.currentTrack) {
+        return this.currentTrack.item.album.images[0].url
       } else {
         return null
       }

@@ -1,6 +1,6 @@
 <template>
-  <q-card-section class="q-pa-none q-mx-sm q-my-md">
-    <div class="row justify-center">
+  <q-card-section>
+    <div class="row justify-center items-center content-center">
       <div v-if="user" class="row fit justify-between">
         <div v-show="false">{{monitorCurrentTrack}}</div>
         <div class="q-pr-sm col-4">
@@ -8,8 +8,8 @@
             flat
             dense
             no-caps
-            class="fit bg-primary"
-            color="grey"
+            class="fit bg-brand-4"
+            text-color="white"
             icon="notes"
             label="Lyrics"
             @click="showLyrics()"
@@ -21,8 +21,8 @@
             flat
             dense
             no-caps
-            class="fit bg-primary"
-            color="grey"
+            class="fit bg-brand-4"
+            text-color="white"
             icon="sync"
             label="Re-Sync"
             @click="refreshToken()"
@@ -33,9 +33,9 @@
             flat
             dense
             no-caps
-            class="fit bg-primary"
+            class="fit bg-brand-4"
             :disable="!user"
-            color="grey"
+            text-color="white"
             icon-right="videogame_asset"
             label="Controls"
             @click="loadControls()"
@@ -48,12 +48,12 @@
       >
         <div
           v-show="controls"
-          class="row fit justify-between q-mt-md bg-primary"
+          class="row fit justify-between q-mt-md bg-brand-4"
           style="border-radius: 10px;"
         >
           <q-item class="col-12">
             <q-item-section side>
-              <q-icon color="secondary" name="volume_down" />
+              <q-icon color="brand-7" name="volume_down" />
             </q-item-section>
             <q-item-section>
               <q-slider
@@ -61,12 +61,12 @@
                 :min="0"
                 :max="100"
                 dark
-                color="secondary"
+                color="brand-7"
                 @change="updateVolume()"
               />
             </q-item-section>
             <q-item-section side>
-              <q-icon color="secondary" name="volume_up" />
+              <q-icon color="brand-7" name="volume_up" />
             </q-item-section>
           </q-item>
           <q-item class="col-12">
@@ -79,7 +79,7 @@
                 :min="0"
                 :max="songDuration"
                 dark
-                color="secondary"
+                color="brand-7"
                 @change="updateProgress()"
               />
             </q-item-section>
@@ -94,11 +94,11 @@
         class="row fit justify-center"
       >
         <div class="col-12 text-white text-center">Loading Lyrics</div>
-        <q-linear-progress dark rounded indeterminate color="secondary"/>
+        <q-linear-progress dark rounded indeterminate color="brand-4"/>
       </div>
       <div
         v-show="displayLyrics && lyrics"
-        class="row fit justify-center q-mt-md bg-primary"
+        class="row fit justify-center q-mt-md bg-brand-4"
         style="border-radius: 10px;"
       >
         <div class="q-my-sm col-4">
@@ -108,7 +108,7 @@
             no-caps
             class="fit"
             label="Create Art!"
-            color="secondary"
+            color="brand-7"
             icon="palette"
             @click="showArtwork()"
             :loading="loadingArtwork"
