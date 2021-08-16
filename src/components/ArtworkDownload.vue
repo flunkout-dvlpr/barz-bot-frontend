@@ -1,9 +1,6 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide" persistent>
-    <q-card
-      class="bg-accent"
-      style="border-radius: 10px; width: 100%"
-    >
+    <q-card class="bg-brand-4">
       <q-card-section class="q-pa-none q-my-sm">
         <div class="row fit justify-center">
           <div class="col-12 text-white text-h6 text-center">Here's your artwork!</div>
@@ -24,7 +21,7 @@
               no-caps
               class="fit text-grey-1"
               label="Close"
-              color="secondary"
+              color="brand-7"
               v-close-popup
             />
           </div>
@@ -33,7 +30,7 @@
               no-caps
               class="fit text-grey-1"
               label="Download"
-              color="secondary"
+              color="brand-7"
               type="a"
               target="_blank"
               :href="url"
@@ -44,7 +41,7 @@
               no-caps
               class="fit text-grey-1"
               label="Tweet"
-              color="secondary"
+              color="brand-7"
               type="a"
               target="_blank"
                :href="`https://twitter.com/intent/tweet?text=${lyricsText}&url=${twitterLink}`"
