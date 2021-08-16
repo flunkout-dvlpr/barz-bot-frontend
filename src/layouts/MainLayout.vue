@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header class="bg-brand-5" elevated>
       <q-toolbar>
 
         <q-toolbar-title>
@@ -25,9 +25,9 @@ export default {
     ...mapGetters('spotify', ['user']),
     welcomeMessage () {
       if (this.user) {
-        return `Let's Jam ${this.user.display_name}!`
+        return `Welcome ${this.user.display_name}!`
       }
-      return "Let's Jam!"
+      return 'Welcome'
     }
   }
 }
