@@ -7,7 +7,7 @@
           ref="trackArtwork"
           v-if="trackImage && showImage"
           :src="trackImage"
-          class="img-frame fit"
+          class="fit"
         >
         <q-icon
           v-else
@@ -64,8 +64,10 @@ export default {
       const colorThief = new ColorThief()
       const imgColors = colorThief.getPalette(img)
       this.palette = []
-      imgColors.sort(function (a, b) { return a[0] - b[0] }).forEach(color => {
-        this.palette.push(`rgb(${color.join()})`)
+      imgColors.sort(function (a, b) { return a[0] - b[0] }).forEach((color, idx) => {
+        if (idx % 2) {
+          this.palette.push(`rgb(${color.join()}) ${idx * 10}%`)
+        }
       })
       console.log(this.palette)
       const gradeints = [
@@ -73,8 +75,10 @@ export default {
         // `linear-gradient(65deg, ${this.palette[2]}, ${this.palette[3]})`,
         // `linear-gradient(85deg, ${this.palette[4]}, ${this.palette[5]})`,
         // `linear-gradient(45deg, ${this.palette[0]}, ${this.palette[3]})`,
-        `linear-gradient(90deg, ${this.palette[4]}, ${this.palette[9]})`
+        `linear-gradient(135deg, ${this.palette.join()})`
+        // `radial-gradient(circle, ${this.palette[0]}, ${this.palette[9]})`
       ]
+      console.log(gradeints)
       document.getElementById('q-app').style.background = gradeints.join()
     }
   },
